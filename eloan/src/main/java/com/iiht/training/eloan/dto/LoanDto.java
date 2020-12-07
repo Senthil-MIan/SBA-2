@@ -5,8 +5,8 @@ public class LoanDto {
 	private String loanName;
 	private Double loanAmount;
 	private String loanApplicationDate;
-	private String businessStructure;
 	private String billingIndicator;
+	private String businessStructure;
 	private String taxIndicator;
 	public String getLoanName() {
 		return loanName;

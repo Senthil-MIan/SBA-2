@@ -6,8 +6,8 @@ public class LoanOutputDto {
 	private UserDto userDto;
 	private LoanDto loanDto;
 	private ProcessingDto processingDto;
-	private SanctionOutputDto sanctionOutputDto;
 	private String status;
+	private SanctionOutputDto sanctionOutputDto;
 	private String remark;
 	public Long getCustomerId() {
 		return customerId;

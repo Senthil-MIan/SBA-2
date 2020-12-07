@@ -29,15 +29,21 @@ public class ClerkController {
 	
 	@GetMapping("/all-applied")
 	public ResponseEntity<List<LoanOutputDto>> allAppliedLoans() {
-		return null;
+		
+		
+		List<LoanOutputDto> allApplied=clerkService.allAppliedLoans();
+		return new ResponseEntity<List<LoanOutputDto>>(allApplied, HttpStatus.OK);
+		
 	}
 	
 	@PostMapping("/process/{clerkId}/{loanAppId}")
 	public ResponseEntity<ProcessingDto> processLoan(@PathVariable Long clerkId,
 													 @PathVariable Long loanAppId,
 													 @RequestBody ProcessingDto processingDto) {
-		return null;
+		ProcessingDto processDto=clerkService.processLoan(clerkId, loanAppId, processingDto);
+		return new ResponseEntity<ProcessingDto>(processDto, HttpStatus.OK);
 	}
+	
 	@ExceptionHandler(ClerkNotFoundException.class)
 	public ResponseEntity<ExceptionResponse> handler(ClerkNotFoundException ex){
 		ExceptionResponse exception = 

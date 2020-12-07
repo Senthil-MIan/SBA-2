@@ -42,7 +42,8 @@ public class AdminController {
 	
 	@GetMapping("/all-managers")
 	public ResponseEntity<List<UserDto>> getAllManagers(){
-		return null;
+		List<UserDto> userDto = this.adminService.getAllManagers();
+		return new ResponseEntity<List<UserDto>>(userDto,HttpStatus.OK);
 	}
 	
 	

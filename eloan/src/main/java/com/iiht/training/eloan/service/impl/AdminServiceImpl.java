@@ -46,20 +46,20 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public UserDto registerManager(UserDto userDto) {
 		// TODO Auto-generated method stub
-		if(userDto.getFirstName() == null || userDto.getFirstName().equals("")  && 
+		if(userDto.getFirstName() == null || userDto.getFirstName().equals("")  || 
 				userDto.getFirstName().length()< 3 || userDto.getFirstName().length()>100) {
 			throw new InvalidDataException("firstname is not as per standard");
 		}
-		else if(userDto.getLastName() == null || userDto.getLastName().equals("")  && 
+		else if(userDto.getLastName() == null || userDto.getLastName().equals("")  ||
 				userDto.getLastName().length()< 3 || userDto.getLastName().length()>100) {
 			throw new InvalidDataException("lastname is not as per standard");
 		}
-		else if(userDto.getEmail() == null || userDto.getEmail().equals("")  && 
+		else if(userDto.getEmail() == null || userDto.getEmail().equals("")  || 
 				userDto.getEmail().length()< 3 || userDto.getEmail().length()>100 || !userDto.getEmail().contains("@")) {
 			throw new InvalidDataException("email is not as per standard");
 		}
-		else if(userDto.getMobile() == null || userDto.getMobile().equals("")  && 
-				userDto.getMobile()< 10 || userDto.getMobile().length()>10) {
+		else if(userDto.getMobile() == null || userDto.getMobile().equals("")  || 
+				userDto.getMobile().length() < 10 || userDto.getMobile().length()>10) {
 			throw new InvalidDataException("mobile number is not as per standard");
 		}
 		Users user = this.covertInputDtoToEntity(userDto);
@@ -70,16 +70,16 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public List<UserDto> getAllClerks() {
-		List<Users> userList = this.usersRepository.findByRole("Clerk");
-		List<UserDto> userDtoList = userList.stream().map(user -> this.covertInputEntityToDto(user)).collect(Collectors.toList());
+		List<Users> clerkList = this.usersRepository.findByRole("Clerk");
+		List<UserDto> userDtoList = clerkList.stream().map(user -> this.covertInputEntityToDto(user)).collect(Collectors.toList());
 		return userDtoList;
 	}
 
 	@Override
 	public List<UserDto> getAllManagers() {
 		// TODO Auto-generated method stub
-		List<Users> userList = this.usersRepository.findByRole("Manager");
-		List<UserDto> userDtoList = userList.stream().map(user -> this.covertInputEntityToDto(user)).collect(Collectors.toList());
+		List<Users> managerList = this.usersRepository.findByRole("Manager");
+		List<UserDto> userDtoList = managerList.stream().map(user -> this.covertInputEntityToDto(user)).collect(Collectors.toList());
 		return userDtoList;
 	}
 	

@@ -6,6 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.iiht.training.eloan.dto.LoanDto;
+import com.iiht.training.eloan.dto.LoanOutputDto;
+import com.iiht.training.eloan.dto.ProcessingDto;
+import com.iiht.training.eloan.dto.SanctionOutputDto;
 import com.iiht.training.eloan.dto.UserDto;
 
 @Entity
@@ -103,6 +106,21 @@ public class Loan {
 		loanDto.setBillingIndicator(loan.getBillingIndicator());
 		loanDto.setTaxIndicator(loan.getTaxIndicator());
 		return loanDto;
+	}
+	
+	public static LoanOutputDto covertInputEntityToLoanOutputDto(Loan loan) {
+		LoanOutputDto loanOutputDto = new LoanOutputDto();
+		loanOutputDto.setCustomerId(loan.getCustomerId());
+		loanOutputDto.setLoanAppId(loan.getId());
+//		private Long customerId;
+//		private Long loanAppId;
+//		private UserDto userDto;
+//		private LoanDto loanDto;
+//		private ProcessingDto processingDto;
+//		private String status;
+//		private SanctionOutputDto sanctionOutputDto;
+//		private String remark;
+		return loanOutputDto;
 	}
 	
 	

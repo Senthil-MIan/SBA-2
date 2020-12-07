@@ -43,12 +43,15 @@ public class CustomerController {
 	
 	@GetMapping("/loan-status/{loanAppId}")
 	public ResponseEntity<LoanOutputDto> getStatus(@PathVariable Long loanAppId){
-		return null;
+		LoanOutputDto loanOutputDto = this.customerService.getStatus(loanAppId);
+		return new ResponseEntity<LoanOutputDto>(loanOutputDto,HttpStatus.OK);
 	}
 	
 	@GetMapping("/loan-status-all/{customerId}")
 	public ResponseEntity<List<LoanOutputDto>> getStatusAll(@PathVariable Long customerId){
-		return null;
+		List<LoanOutputDto> loanOutputDto = this.customerService.getStatusAll(customerId);
+		return new ResponseEntity<List<LoanOutputDto>>(loanOutputDto,HttpStatus.OK);
+		
 	}
 	
 	@ExceptionHandler(CustomerNotFoundException.class)
