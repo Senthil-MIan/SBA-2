@@ -48,7 +48,8 @@ public class ManagerController {
 	public ResponseEntity<RejectDto> rejectLoan(@PathVariable Long managerId,
 												@PathVariable Long loanAppId,
 												@RequestBody RejectDto rejectDto){
-		return null;
+		RejectDto rejDto=managerService.rejectLoan(managerId, loanAppId, rejectDto);
+		return new ResponseEntity<RejectDto>(rejDto, HttpStatus.OK);
 	}
 	
 	

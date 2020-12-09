@@ -1,5 +1,7 @@
 package com.iiht.training.eloan.service.impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +50,29 @@ public class ManagerServiceImpl implements ManagerService {
 	@Override
 	public RejectDto rejectLoan(Long managerId, Long loanAppId, RejectDto rejectDto) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		Optional<Users> user = this.usersRepository.findById(managerId);
+		if(!user.isPresent()) {
+			throw new ManagerNotFoundException("manager not found");
+		}
+		
+		Optional<Loan> optionalLoan = this.loanRepository.findById(loanAppId);
+		if(!optionalLoan.isPresent()) {
+			throw new LoanNotFoundException("loan is not found");
+		}
+		Loan loan = optionalLoan.get();
+		
+		//this.covertInputProcessInfoDtoToProcessingInfoEntity(processingDto);
+		
+		/*
+		 * processInfo.setLoanAppId(loanAppId); processInfo.setLoanClerkId(clerkId);
+		 * this.processingInfoRepository.save(processInfo);
+		 */
+		loan.setStatus(1);
+		loan.setRemark(rejectDto.getRemark());
+		this.loanRepository.save(loan);
+		return rejectDto;
+		
 	}
 
 	@Override
@@ -67,28 +91,49 @@ public class ManagerServiceImpl implements ManagerService {
 		}
 		Loan loan = optionalLoan.get();
 		
-		SanctionInfo sanctionInfo;
+		SanctionInfo sanctionInfo=this.covertInputSanctionDtoToSanctionInfoEntity(sanctionDto);
+		
+//		Term payment amount = (Sanctioned loan amount ) * (1 + interest rate/100) ^ (term of loan)		
+//		Monthly payment = (Term payment amount ) / (Term of loan)
+		LocalDate startDate = LocalDate.parse(sanctionDto.getPaymentStartDate());
+		String loanClosureDate = startDate.plusMonths(sanctionDto.getTermOfLoan().longValue()).toString();
+		Double interestRate =7/100.0;
+		Double monthlyRate = interestRate / 12.0;
+		Double monthlyPayment = (sanctionDto.getLoanAmountSanctioned()*monthlyRate) / 
+		            (1-Math.pow(1+monthlyRate, - sanctionDto.getTermOfLoan()));
+//		Double termPaymentAmount = Math.pow((sanctionDto.getLoanAmountSanctioned()) * (1 + 7/100),sanctionDto.getTermOfLoan());
+//		Double monthlyPayment = termPaymentAmount/ sanctionDto.getTermOfLoan();
+		
 		
 		sanctionInfo.setLoanAppId(loanAppId);
 		sanctionInfo.setManagerId(managerId);
+		sanctionInfo.setLoanAmountSanctioned(sanctionDto.getLoanAmountSanctioned());
+		sanctionInfo.setTermOfLoan(sanctionDto.getTermOfLoan());
+		sanctionInfo.setPaymentStartDate(sanctionDto.getPaymentStartDate());
+		sanctionInfo.setLoanClosureDate(loanClosureDate);
+		sanctionInfo.setMonthlyPayment(monthlyPayment);
 		this.sanctionInfoRepository.save(sanctionInfo);
-		loan.setStatus(1);
+		loan.setStatus(2);
 		this.loanRepository.save(loan);
+		SanctionOutputDto sanctionOutputDto = new SanctionOutputDto();
+		sanctionOutputDto.setLoanAmountSanctioned(sanctionDto.getLoanAmountSanctioned());
+		sanctionOutputDto.setLoanClosureDate(loanClosureDate);
+		sanctionOutputDto.setMonthlyPayment(monthlyPayment);
+		sanctionOutputDto.setPaymentStartDate(sanctionInfo.getPaymentStartDate());
+		sanctionOutputDto.setTermOfLoan(sanctionInfo.getTermOfLoan());
 		return sanctionOutputDto;
 	}
 		//return null;
-}
 
 
-private ProcessingInfo covertInputProcessInfoDtoToProcessingInfoEntity(SanctionDto sanctionDto) {
-	ProcessingInfo processingInfo = new ProcessingInfo();
-	processingInfo.setAcresOfLand(SanctionDto.getAcresOfLand());
-	processingInfo.setAddressOfProperty(SanctionDto.getAddressOfProperty());
-	processingInfo.setAppraisedBy(SanctionDto.getAppraisedBy());
-	processingInfo.setLandValue(SanctionDto.getLandValue());
-	processingInfo.setSuggestedAmountOfLoan(SanctionDto.getSuggestedAmountOfLoan());
-	processingInfo.setValuationDate(SanctionDto.getValuationDate());
-	return processingInfo;W
+
+private SanctionInfo covertInputSanctionDtoToSanctionInfoEntity(SanctionDto sanctionDto) {
+	SanctionInfo sanctionInfo = new SanctionInfo();
+	sanctionInfo.setLoanAmountSanctioned(sanctionDto.getLoanAmountSanctioned());
+	sanctionInfo.setTermOfLoan(sanctionDto.getTermOfLoan());
+	sanctionInfo.setPaymentStartDate(sanctionDto.getPaymentStartDate());
+	
+	return sanctionInfo;
 }
 
 }
